@@ -1,0 +1,105 @@
+/**
+ * This is the Vertex class in which the nodes will be placed
+ * @author Jessica Lundberg
+ *
+ */
+public class Vertex implements Comparable<Vertex> {
+
+	//colors used in last assignment unused here
+	public static final int WHITE = 1;
+	public static final int GREEN = 2;
+	public static final int BLACK = 3;
+	
+	//the name, color, visited flag, and distance of the node/Vertex
+	private String name;
+	private int color;
+	private boolean visited;
+	private int distance;
+	
+	/**
+	 * This method constructs a Vertex node
+	 * @param name - the name of the node
+	 */
+	public Vertex(String name) {
+		this.name = name;
+		color = 0;
+		visited = false;
+	}
+	
+	/**
+	 * Gets the name of the Vertex
+	 * @return - the name
+	 */
+	public String getName() {
+		return name;
+	}
+	
+	/**
+	 * Gets the color of the Vertex
+	 * @return - the color
+	 */
+	public int getColor() {
+		return color;
+	}
+	
+	/**
+	 * Sets the color of the Vertex
+	 * @param newColor - the color to be entered
+	 */
+	public void setColor(int newColor) {
+		color = newColor;
+	}
+	
+	/**
+	 * Flags the Vertex for whether it was visited or not
+	 * @return - false, not visited. true, visited
+	 */
+	public boolean isVisited() {
+		return visited;
+	}
+	
+	/**
+	 * Set's the visited node false or true
+	 * @param newVisit - true or false whether it was visited or not
+	 */
+	public void setVisited(boolean newVisit) {
+		visited = newVisit;
+	}
+	
+	/**
+	 * Gets the distance of the Vertex
+	 * @return - the distance
+	 */
+	public int getDistance() {
+		return distance;
+	}
+	
+	/**
+	 * Sets the distance of the Vertex
+	 * @param newDistance - the distance to change it to
+	 */
+	public void setDistance(int newDistance) {
+		distance = newDistance;
+	}
+	/**
+	 * The new compareTo function to use to override the original
+	 * so we can use a PriorityQueue
+	 */
+	@Override
+	public int compareTo(Vertex o) {
+		int value = 0;
+		if(distance < o.getDistance()) {
+			value = -1;
+		}else if(distance > o.getDistance()) {
+			value = 1;
+		}
+		return value;
+	}
+	
+	/**
+	 * toString for the name
+	 */
+	public String toString() {
+		return name;
+	}
+}

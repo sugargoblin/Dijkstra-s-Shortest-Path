@@ -1,0 +1,164 @@
+import java.util.HashMap;
+import java.util.PriorityQueue;
+
+/**
+ * This class is a GraphMatrix in which Dijkstra's shortest path algorithm will
+ * run and adjust the edgeweights to find the shortest way to the end.
+ * 
+ * @author Jessica Lundberg
+ *
+ */
+public class GraphMatrix {
+
+	private Vertex[] vertices;
+	private int[][] edgeWeights;
+
+	/**
+	 * This method constructs a GraphMatrix with given values
+	 * 
+	 * @param newVertices    - the vertices given
+	 * @param newEdgeWeights - the edgeweights given
+	 */
+	public GraphMatrix(Vertex[] newVertices, int[][] newEdgeWeights) {
+		edgeWeights = newEdgeWeights;
+		vertices = newVertices;
+	}
+
+	/**
+	 * This method is Dijkstra's Shortest Path algorithm. It is a greedy algorithm
+	 * that will find the shortest path from beginning to end and rearrange the
+	 * edgeweights.
+	 * 
+	 * @param sourceIndex - the index that Dijkstra is to start finding the path
+	 *                    from
+	 */
+	public void Dijkstra(int sourceIndex) {
+		// vertex source = vertices[sourceIndex]
+		Vertex source = vertices[sourceIndex];
+		// create PriorityQueue<Vertex> Q
+		PriorityQueue<Vertex> Q = new PriorityQueue<Vertex>();
+		// ceate a HashMap<Vertex,Vertex> predecessor
+		HashMap<Vertex, Vertex> predecessor = new HashMap<Vertex, Vertex>();
+
+		// for each vertex v in Graph:
+		for (Vertex v : vertices) {
+			// dist[v] = infinity v.setDistance(Integer.MAX_INT)
+			v.setDistance(Integer.MAX_VALUE);
+			// if v is source
+			if (v == source) {
+				// set dist[source] = 0
+				v.setDistance(0);
+			}
+			// add v to Q
+			Q.add(v);
+		} // end for
+
+		// the variable alt is the length of the path from the root node to the neighbor
+		// node v if it were to go through u. if this path is shorter than the current
+		// shortest path recorded for b, that current path is replaced with this alt
+		// path
+
+		// predecessor hashmap is populated with a previous node used to get the
+		// shortest
+		// route to the source
+
+		// while Q is not empty do
+		while (!Q.isEmpty()) {
+			// u = vertex in Q with min distance (searches for the vertex u in the vertex
+			// set Q that has the least dist[u] value)
+			// remove u from Q
+			Vertex u = Q.remove();
+
+			// uIndex = index of u in vertices
+			int uIndex = -1;
+			for (int i = 0; i < vertices.length; i++) {
+				if (vertices[i] == u) {
+					uIndex = i;
+				}
+			}
+
+			// for each neighbor v of u do
+			// get all neighbors of u (has >0 in edgeWeights)
+			for (int i = 0; i < vertices.length; i++) {
+				// if edge exists u to v in min queue
+				if (this.edgeWeights[uIndex][i] > 0 && Q.contains(vertices[i])) {
+					Vertex v = vertices[i];
+					// if v still in Q and edge from u to v
+					if (Q.contains(v)) {
+						// alt = dist[u] + length(u,v) (returns the length of the edge joining (i.e. the
+						// distance between) the two neighbor-nodes u and v)
+						int alt = u.getDistance() + edgeWeights[uIndex][i];
+						// if alt < dist[v]:
+						if (alt < v.getDistance()) {
+							// remove v from Q
+							Q.remove(v);
+							// dist[v] = alt
+							v.setDistance(alt);
+							// add v to Q
+							Q.add(v);
+							// set u to be predecessor to v
+							predecessor.put(v, u);
+						}
+
+					}
+				}
+			}
+		}
+
+		String s = "";
+		s += "\nDistances from Vertex " + vertices[0] + "\n";
+
+		// print out the vertices and their distances
+		for (int i = 0; i < vertices.length; i++) {
+			s += vertices[i] + ", ";
+			s += vertices[i].getDistance() + "\n";
+		}
+		System.out.println(s);
+
+		String t = "\nShortest paths from Vertex " + vertices[0];
+		System.out.println(t);
+		//show the shortest paths from Vertex A
+		for (Vertex current : vertices) {
+			String path = "";
+			//if not sourceIndex
+			if(current != vertices[sourceIndex]) {
+				path += "->" + current + ", " + current.getDistance();
+				//while predecessor has the current key
+				while (predecessor.containsKey(current)) {
+					//if predecessor of current is source
+					 if(predecessor.get(current) == source) {
+						 path = predecessor.get(current) + path;
+					 }else {
+						 //else if it's not
+						 path = "->" + predecessor.get(current) + ", " + predecessor.get(current).getDistance() + path;				
+						 }
+					 current = predecessor.get(current);
+				} //end while
+			} //end if
+			
+			System.out.println(path); //print path
+		} //end for
+	}
+
+	/**
+	 * This method converts the results to a string to be read and easily managed.
+	 */
+	public String toString() {
+
+		// print out the adjacency list for the graph
+		String s = "Adjacency list for graph: \n";
+		// loop through edgeweights to find neighbors and weights
+		for (int row = 0; row < edgeWeights.length; row++) {
+			s += vertices[row];
+			for (int col = 0; col < edgeWeights[row].length; col++) {
+				if (edgeWeights[row][col] > 0) {
+					s += " ->" + vertices[col] + "," + edgeWeights[row][col];
+				}
+			}
+			s += "\n";
+		}
+
+		return s;
+
+	}
+}
